@@ -39,6 +39,4 @@ readDataObj.expression = splitReadData[splitReadData.length - 1];
 readDataObj.expressionCount = readDataObj.expression.match(/[*+-]/g).length;
 
 
-//console.log(readDataArr);
 console.log(readDataObj);
-//console.log(splitReadData);
