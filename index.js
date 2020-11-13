@@ -19,18 +19,36 @@ function multiplication(A, B) {
     let stepA;
     let offset = 0;
     let stepB = B.cols;
+    let newRow = {
+        nextIndex: 0, // default
+        isNewRow: false,
+    };
+    let nextColIndex = 0; //default
+    let nextRowIndex = 1;
 
     for (let i = 0; i < A.rows*A.cols; i++) {
         for (let j = 0; j < rowThreshold; j++) {
-            stepA = rowThreshold - (rowThreshold - offset);
-            if (j === 0) {
-                temp.push( A.matrixValue[stepA] * B.matrixValue[offset + i] )
+            if (newRow.isNewRow) {
+                nextColIndex = 0;
+                nextRowIndex = nextRowIndex + 1;
+                stepA = newRow.nextIndex;
             } else {
-                temp.push( A.matrixValue[stepA] * B.matrixValue[stepB + i] )
-                stepB +=stepB;
+                stepA = newRow.nextIndex + (rowThreshold - (rowThreshold - offset));
+            }
+            newRow.isNewRow = false;
+            if (j === 0) {
+                temp.push( A.matrixValue[stepA] * B.matrixValue[offset + nextColIndex] );
+            } else {
+                temp.push( A.matrixValue[stepA] * B.matrixValue[stepB + nextColIndex] );
+                stepB += stepB;
             }
             offset++;
+            if ( (i === rowThreshold * nextRowIndex - 1) && (j === rowThreshold - 1)) {
+                newRow.nextIndex = newRow.nextIndex + rowThreshold;
+                newRow.isNewRow = true;
+            }
         }
+        nextColIndex = nextColIndex + 1;
         // reset
         offset = 0;
         stepB = B.cols;
