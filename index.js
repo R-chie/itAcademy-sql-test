@@ -1,12 +1,58 @@
 const fs = require('fs');
 
-//let readData = fs.readFileSync(process.stdin.fd, 'utf-8');
-let readData = fs.readFileSync('pub01.in', 'utf-8');
+let readData = fs.readFileSync(process.stdin.fd, 'utf-8');
+//let readData = fs.readFileSync('pub01.in', 'utf-8');
 let input = processInput(readData);
+let output = {...input}
 
-addition(input.matrix.B, input.matrix.E);
-subtraction(input.matrix.B, input.matrix.E);
-multiplication(input.matrix.B, input.matrix.E);
+let expression = output.expression;
+try {
+    for (let i = 0; i < output.expressionCount; i++) {
+        if (/[*]/.test(expression)) {
+            let operationIndex = expression.indexOf('*');
+
+            let nameA = expression.slice(operationIndex - 1, operationIndex);
+            let nameB = expression.slice(operationIndex + 1, operationIndex + 2);
+
+            let result = multiplication(output.matrix[nameA], output.matrix[nameB]);
+            expression = output.expression.replace(`${nameA}*${nameB}`, result.matrixName);
+            output.matrix[result.matrixName] = result;
+            delete output.matrix[nameB];
+            continue;
+
+        }
+        if ( /[+]/.test(expression) ) {
+            let operationIndex = expression.indexOf('+');
+
+            let nameA = expression.slice(operationIndex - 1, operationIndex);
+            let nameB = expression.slice(operationIndex + 1, operationIndex + 2);
+
+            let result = addition(output.matrix[nameA], output.matrix[nameB]);
+            expression = output.expression.replace(`${nameA}+${nameB}`, result.matrixName);
+            output.matrix[result.matrixName] = result;
+            delete output.matrix[nameB];
+            continue;
+        }
+        if ( /[-]/.test(expression) ) {
+            let operationIndex = expression.indexOf('-');
+
+            let nameA = expression.slice(operationIndex - 1, operationIndex);
+            let nameB = expression.slice(operationIndex + 1, operationIndex + 2);
+
+            let result = subtraction(output.matrix[nameA], output.matrix[nameB]);
+            expression = output.expression.replace(`${nameA}-${nameB}`, result.matrixName);
+            output.matrix[result.matrixName] = result;
+            delete output.matrix[nameB];
+        }
+    }
+} catch (e) {
+    console.log(e)
+    throw new Error('Что-то пошло не так... Я не умею работать с разноразмерными матрицами')
+}
+
+fs.writeFileSync(process.stdout.fd,`\nРезультат вычисления: [${output.matrix[Object.keys(output.matrix)[0]].matrixValue}]`);
+
+//
 
 function multiplication(A, B) {
     let result = [];
@@ -57,7 +103,7 @@ function multiplication(A, B) {
 
     const C = {
         matrixValue: result,
-        matrixName: A.matrixName + B.matrixName,
+        matrixName: A.matrixName,
         // тут еще посмореть как определить количество строк и столбцов
         cols: A.cols,
         rows: A.rows,
@@ -74,7 +120,7 @@ function subtraction(A, B) {
     }
     const C = {
         matrixValue: result,
-        matrixName: A.matrixName + B.matrixName,
+        matrixName: A.matrixName,
         // тут еще посмореть как определить количество строк и столбцов
         cols: A.cols,
         rows: A.rows,
@@ -91,7 +137,7 @@ function addition(A, B) {
     }
     const C = {
         matrixValue: result,
-        matrixName: A.matrixName + B.matrixName,
+        matrixName: A.matrixName,
         // тут еще посмореть как определить количество строк и столбцов
         cols: A.cols,
         rows: A.rows,

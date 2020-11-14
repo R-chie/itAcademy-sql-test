@@ -1,0 +1,41 @@
+{
+  matrix: {
+    B: { matrixName: 'B', matrixValue: [Array], cols: 3, rows: 3 },
+    E: { matrixName: 'E', matrixValue: [Array], cols: 3, rows: 3 },
+    R: { matrixName: 'R', matrixValue: [Array], cols: 3, rows: 3 }
+  },
+  expression: 'R+E+B',
+  expressionCount: 2
+}
+-1,-7,6,-2,9,-4,6,-10,2 
++
+ -6,-5,-8,-1,-1,-10,10,0,-7 
+=
+ -7,-12,-2,-3,8,-14,16,-10,-5
+addition result: {
+  matrixValue: [
+    -7, -12, -2,  -3,
+     8, -14, 16, -10,
+    -5
+  ],
+  matrixName: 'R',
+  cols: 3,
+  rows: 3
+}
+-7,-12,-2,-3,8,-14,16,-10,-5 
++
+ 5,2,4,0,2,-1,3,-5,-4 
+=
+ -2,-10,2,-3,10,-15,19,-15,-9
+addition result: {
+  matrixValue: [
+    -2, -10,  2,  -3,
+    10, -15, 19, -15,
+    -9
+  ],
+  matrixName: 'R',
+  cols: 3,
+  rows: 3
+}
+
+Результат вычисления: [-2,-10,2,-3,10,-15,19,-15,-9]
